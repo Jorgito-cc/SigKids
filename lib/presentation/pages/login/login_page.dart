@@ -7,177 +7,165 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_input.dart';
 
 class LoginPage extends GetView<LoginController> {
-  final bool isRegister;
-
-  const LoginPage({Key? key, this.isRegister = false}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (isRegister) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        controller.isRegister.value = true;
-      });
-    }
-
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.backgroundGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppTheme.backgroundGradient),
         child: SafeArea(
-          child: Obx(() => SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Obx(() => Column(
                   children: [
                     const SizedBox(height: 40),
-                    _buildLogo(),
+                    _logo(),
                     const SizedBox(height: 40),
-                    _buildTitle(),
+                    _title(),
                     const SizedBox(height: 40),
-
                     controller.isRegister.value
-                        ? _buildRegisterForm(context)
-                        : _buildLoginForm(),
-
-                    const SizedBox(height: 24),
-                    _buildMainButton(),
-                    const SizedBox(height: 24),
-                    _buildToggleButton(),
+                        ? _registerForm(context)
+                        : _loginForm(),
+                    const SizedBox(height: 20),
+                    _mainButton(),
+                    const SizedBox(height: 20),
+                    _toggleButton(),
+                    const SizedBox(height: 40),
                   ],
-                ),
-              )),
+                )),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildLogo() {
-    return FadeInDown(
-      duration: const Duration(milliseconds: 800),
-      child: Center(
-        child: Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: AppTheme.primaryGradient,
-            boxShadow: AppTheme.glowShadow,
-          ),
-          child: const Icon(Icons.child_care, size: 60, color: Colors.white),
+  Widget _logo() {
+    return ZoomIn(
+      child: Container(
+        width: 120,
+        height: 120,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          gradient: AppTheme.primaryGradient,
         ),
+        child: const Icon(Icons.child_care, size: 60, color: Colors.white),
       ),
     );
   }
 
-  Widget _buildTitle() {
-    return Obx(() => FadeInDown(
-          delay: const Duration(milliseconds: 200),
-          child: Column(
-            children: [
-              Text(
-                controller.isRegister.value ? 'Registro' : 'Bienvenido',
-                style: const TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'SIGKids – Monitoreo Infantil',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: AppTheme.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ));
-  }
-
-  Widget _buildLoginForm() {
-    return FadeInUp(
-      delay: const Duration(milliseconds: 400),
-      child: Column(
-        children: [
-          CustomInput(
-            label: 'Email',
-            hint: 'tu@email.com',
-            controller: controller.email,
-            prefixIcon: Icons.email_outlined,
-          ),
-          const SizedBox(height: 20),
-          Obx(() => CustomInput(
-                label: 'Contraseña',
-                hint: '••••••••',
-                controller: controller.password,
-                obscureText: true,
-                prefixIcon: Icons.lock_outlined,
-              )),
-        ],
-      ),
+  Widget _title() {
+    return Text(
+      controller.isRegister.value ? "Registro" : "Bienvenido",
+      style: const TextStyle(
+          fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
     );
   }
 
-  Widget _buildRegisterForm(BuildContext context) {
-    return FadeInUp(
-      delay: const Duration(milliseconds: 400),
-      child: Column(
-        children: [
-          CustomInput(
-            label: 'Email',
-            hint: 'tu@email.com',
-            controller: controller.email,
-            prefixIcon: Icons.email_outlined,
-          ),
-          const SizedBox(height: 20),
-          CustomInput(
-            label: 'Contraseña',
-            hint: '••••••••',
-            controller: controller.password,
-            obscureText: true,
-            prefixIcon: Icons.lock_outline,
-          ),
-        ],
-      ),
+  Widget _loginForm() {
+    return Column(
+      children: [
+        CustomInput(
+          label: "Email",
+          controller: controller.email,
+          prefixIcon: Icons.email_outlined,
+        ),
+        const SizedBox(height: 20),
+        Obx(() => CustomInput(
+              label: "Contraseña",
+              controller: controller.password,
+              obscureText: controller.obscure.value,
+              prefixIcon: Icons.lock_outline,
+              suffixIcon: IconButton(
+                icon: Icon(
+                    controller.obscure.value
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Colors.white),
+                onPressed: controller.togglePassword,
+              ),
+            )),
+      ],
     );
   }
 
-  Widget _buildMainButton() {
-    return Obx(() => FadeInUp(
-          delay: const Duration(milliseconds: 600),
-          child: CustomButton(
-            text: controller.isRegister.value
-                ? 'Registrarse'
-                : 'Iniciar Sesión',
-            onPressed: controller.isRegister.value
-                ? controller.register
-                : controller.login,
-            isLoading: controller.isLoading.value,
-            icon: controller.isRegister.value
-                ? Icons.person_add
-                : Icons.login,
-          ),
+  Widget _registerForm(BuildContext context) {
+    return Column(
+      children: [
+        CustomInput(
+          label: "Nombre",
+          controller: controller.name,
+          prefixIcon: Icons.person,
+        ),
+        const SizedBox(height: 20),
+        CustomInput(
+          label: "Apellido",
+          controller: controller.lastname,
+          prefixIcon: Icons.person_outline,
+        ),
+        const SizedBox(height: 20),
+        CustomInput(
+          label: "Cédula",
+          controller: controller.ci,
+          prefixIcon: Icons.badge,
+        ),
+        const SizedBox(height: 20),
+        CustomInput(
+          label: "Fecha de nacimiento",
+          controller: controller.birth,
+          readOnly: true,
+          prefixIcon: Icons.calendar_today,
+          onTap: () => controller.pickBirthDate(context),
+        ),
+        const SizedBox(height: 20),
+        CustomInput(
+          label: "Dirección",
+          controller: controller.address,
+          prefixIcon: Icons.home,
+        ),
+        const SizedBox(height: 20),
+        CustomInput(
+          label: "Email",
+          controller: controller.email,
+          prefixIcon: Icons.email,
+        ),
+        const SizedBox(height: 20),
+        Obx(() => CustomInput(
+              label: "Contraseña",
+              controller: controller.password,
+              obscureText: controller.obscure.value,
+              prefixIcon: Icons.lock,
+              suffixIcon: IconButton(
+                icon: Icon(
+                    controller.obscure.value
+                        ? Icons.visibility
+                        : Icons.visibility_off,
+                    color: Colors.white),
+                onPressed: controller.togglePassword,
+              ),
+            )),
+      ],
+    );
+  }
+
+  Widget _mainButton() {
+    return Obx(() => CustomButton(
+          text: controller.isRegister.value ? "Registrarse" : "Iniciar sesión",
+          onPressed:
+              controller.isRegister.value ? controller.register : controller.login,
+          isLoading: controller.loading.value,
         ));
   }
 
-  Widget _buildToggleButton() {
-    return Obx(() => FadeInUp(
-          delay: const Duration(milliseconds: 800),
-          child: TextButton(
-            onPressed: controller.toggleMode,
-            child: Text(
-              controller.isRegister.value
-                  ? '¿Ya tienes cuenta? Inicia sesión'
-                  : '¿No tienes cuenta? Regístrate',
-              style: const TextStyle(
-                color: AppTheme.primaryColor,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ));
+  Widget _toggleButton() {
+    return TextButton(
+      onPressed: controller.toggleMode,
+      child: Obx(() => Text(
+            controller.isRegister.value
+                ? "¿Ya tienes cuenta? Iniciar sesión"
+                : "¿No tienes cuenta? Regístrate",
+            style: const TextStyle(color: Colors.white),
+          )),
+    );
   }
 }
-

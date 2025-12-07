@@ -5,21 +5,41 @@ import '../../config/local_storage.dart';
 import '../../routes/app_routes.dart';
 
 class LoginController extends GetxController {
+  // Campos login
   final email = TextEditingController();
   final password = TextEditingController();
-  var isLoading = false.obs;
-  var isRegister = false.obs;
 
+  // Campos registro
   final name = TextEditingController();
   final lastname = TextEditingController();
   final ci = TextEditingController();
   final birth = TextEditingController();
   final address = TextEditingController();
 
+  var obscure = true.obs;
+  var loading = false.obs;
+  var isRegister = false.obs;
+
   void toggleMode() => isRegister.value = !isRegister.value;
 
+  void togglePassword() => obscure.value = !obscure.value;
+
+  Future<void> pickBirthDate(BuildContext context) async {
+    final p = await showDatePicker(
+      context: context,
+      initialDate: DateTime(2010),
+      firstDate: DateTime(1990),
+      lastDate: DateTime.now(),
+    );
+
+    if (p != null) {
+      birth.text = "${p.day}/${p.month}/${p.year}";
+    }
+  }
+
+  // LOGIN
   Future<void> login() async {
-    isLoading.value = true;
+    loading.value = true;
 
     try {
       final token = await AuthApi.login(email.text, password.text);
@@ -30,12 +50,13 @@ class LoginController extends GetxController {
       Get.snackbar("Error", e.toString(),
           backgroundColor: Colors.red, colorText: Colors.white);
     } finally {
-      isLoading.value = false;
+      loading.value = false;
     }
   }
 
+  // REGISTRO
   Future<void> register() async {
-    isLoading.value = true;
+    loading.value = true;
 
     try {
       await AuthApi.register({
@@ -43,15 +64,19 @@ class LoginController extends GetxController {
         "password": password.text,
       });
 
-      Get.snackbar("Éxito", "Tu cuenta fue creada.",
-          backgroundColor: Colors.green, colorText: Colors.white);
+      Get.snackbar(
+        "Éxito",
+        "Cuenta creada correctamente",
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
 
       toggleMode();
     } catch (e) {
       Get.snackbar("Error", e.toString(),
           backgroundColor: Colors.red, colorText: Colors.white);
     } finally {
-      isLoading.value = false;
+      loading.value = false;
     }
   }
 }
