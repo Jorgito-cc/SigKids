@@ -1,0 +1,74 @@
+name: smart_sig
+description: "SIGKids - Monitoreo Infantil - Aplicación móvil para control parental geolocalizado"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # --- NAVEGACIÓN Y ESTADO ---
+  get: ^4.6.6
+
+  # --- LOCAL STORAGE ---
+  get_storage: ^2.1.1
+
+  # --- ANIMACIONES ---
+  lottie: ^2.7.0
+  animate_do: ^2.1.0
+  flutter_animate: ^4.2.0
+  rive: ^0.12.3
+
+  # --- UI / DISEÑO ---
+  google_fonts: ^6.2.1
+  flutter_blurhash: ^0.8.2
+  shimmer: ^3.0.0
+  glassmorphism: ^3.0.0
+
+  # --- ICONOS ---
+  flutter_svg: ^2.0.10+1
+  cupertino_icons: ^1.0.6
+
+  # --- HTTP / API ---
+  dio: ^5.4.0
+  retrofit: ^4.0.3
+  json_annotation: ^4.8.1
+
+  # --- PERMISOS (NUEVO Y CORRECTO) ---
+  permission_handler: ^11.3.0
+
+  # --- MAPAS Y SIG ---
+  google_maps_flutter: ^2.5.0
+  geolocator: ^10.1.0
+  geocoding: ^2.2.2
+  latlong2: ^0.9.0
+
+  # --- NOTIFICACIONES ---
+  flutter_local_notifications: ^17.1.0
+
+  # --- SELECTORES Y LISTAS ---
+  dropdown_button2: ^2.3.9
+  flutter_staggered_animations: ^1.1.1
+
+  # --- UTILIDADES ---
+  intl: ^0.18.1
+  uuid: ^4.2.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.6
+  json_serializable: ^6.7.1
+  retrofit_generator: ^7.0.8
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/lottie/
+    - assets/icons/
