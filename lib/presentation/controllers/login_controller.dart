@@ -5,35 +5,40 @@ import '../../config/local_storage.dart';
 import '../../routes/app_routes.dart';
 
 class LoginController extends GetxController {
-  // Campos login
+  // Modo login/registro
+  var isRegister = false.obs;
+
+  // Inputs
   final email = TextEditingController();
   final password = TextEditingController();
 
-  // Campos registro
   final name = TextEditingController();
   final lastname = TextEditingController();
   final ci = TextEditingController();
   final birth = TextEditingController();
   final address = TextEditingController();
 
+  // Estados
   var obscure = true.obs;
   var loading = false.obs;
-  var isRegister = false.obs;
 
-  void toggleMode() => isRegister.value = !isRegister.value;
-
+  // Cambiar visibilidad password
   void togglePassword() => obscure.value = !obscure.value;
 
+  // Cambiar entre login / registro
+  void toggleMode() => isRegister.value = !isRegister.value;
+
+  // Selector de fecha
   Future<void> pickBirthDate(BuildContext context) async {
-    final p = await showDatePicker(
+    final date = await showDatePicker(
       context: context,
       initialDate: DateTime(2010),
       firstDate: DateTime(1990),
       lastDate: DateTime.now(),
     );
 
-    if (p != null) {
-      birth.text = "${p.day}/${p.month}/${p.year}";
+    if (date != null) {
+      birth.text = "${date.day}/${date.month}/${date.year}";
     }
   }
 
@@ -43,6 +48,7 @@ class LoginController extends GetxController {
 
     try {
       final token = await AuthApi.login(email.text, password.text);
+
       await LocalStorage().saveToken(token);
 
       Get.offAllNamed(AppRoutes.homeTutor);
@@ -62,14 +68,15 @@ class LoginController extends GetxController {
       await AuthApi.register({
         "email": email.text,
         "password": password.text,
+        "nombre": name.text,
+        "apellido": lastname.text,
+        "ci": ci.text,
+        "direccion": address.text,
+        "fechaNacimiento": birth.text,
       });
 
-      Get.snackbar(
-        "Éxito",
-        "Cuenta creada correctamente",
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+      Get.snackbar("Éxito", "Registro completado.",
+          backgroundColor: Colors.green, colorText: Colors.white);
 
       toggleMode();
     } catch (e) {

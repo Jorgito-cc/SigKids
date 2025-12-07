@@ -42,7 +42,8 @@ class AppPages {
 
     GetPage(
       name: AppRoutes.register,
-      page: () => const LoginPage(isRegister: true),
+      page: () => const LoginPage(),
+
       binding: LoginBinding(),
       transition: Transition.rightToLeft,
     ),
