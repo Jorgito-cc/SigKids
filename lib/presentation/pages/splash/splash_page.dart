@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:smart_sig/presentation/controllers/splash_controller.dart';
 import '../../../config/app_theme.dart';
+import '../../controllers/splash_controller.dart';
 
 class SplashPage extends GetView<SplashController> {
-  const SplashPage({Key? key}) : super(key: key);
+  const SplashPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,6 @@ class SplashPage extends GetView<SplashController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo animado
               ZoomIn(
                 duration: const Duration(milliseconds: 800),
                 child: Container(
@@ -36,10 +35,7 @@ class SplashPage extends GetView<SplashController> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 40),
-
-              // Título
               FadeInUp(
                 delay: const Duration(milliseconds: 400),
                 child: Text(
@@ -50,23 +46,18 @@ class SplashPage extends GetView<SplashController> {
                       ),
                 ),
               ),
-
-              const SizedBox(height: 8),
-
-              // Subtítulo
+              const SizedBox(height: 10),
               FadeInUp(
                 delay: const Duration(milliseconds: 600),
                 child: Text(
                   'Monitoreo Infantil',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        color: AppTheme.textSecondary,
-                      ),
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: AppTheme.textSecondary.withOpacity(0.8),
+                  ),
                 ),
               ),
-
-              const SizedBox(height: 60),
-
-              // Loading indicator
+              const SizedBox(height: 40),
               FadeInUp(
                 delay: const Duration(milliseconds: 800),
                 child: const CircularProgressIndicator(

@@ -1,31 +1,14 @@
 import 'package:get/get.dart';
-import '../../api/auth_api.dart';
-import '../../config/local_storage.dart';
 import '../../routes/app_routes.dart';
 
 class SplashController extends GetxController {
-  final storage = LocalStorage();
-
   @override
-  void onReady() async {
+  void onReady() {
     super.onReady();
 
-    await Future.delayed(const Duration(seconds: 1));
-
-    final token = storage.getToken();
-
-    if (token == null) {
+    // Solo espera y va al Login SIN verificar token
+    Future.delayed(const Duration(seconds: 2), () {
       Get.offAllNamed(AppRoutes.login);
-      return;
-    }
-
-    final isValid = await AuthApi.verifyToken();
-
-    if (isValid) {
-      Get.offAllNamed(AppRoutes.homeTutor);
-    } else {
-      storage.clearSession();
-      Get.offAllNamed(AppRoutes.login);
-    }
+    });
   }
 }
