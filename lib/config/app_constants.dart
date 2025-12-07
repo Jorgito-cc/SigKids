@@ -2,7 +2,7 @@
 class AppConstants {
   // API Configuration
   static const String baseUrl =
-      'http://localhost:8000'; // Cambiar por tu IP o dominio
+      'http://192.168.0.7:8000'; // Cambiar por tu IP o dominio
   static const String apiVersion = 'v1';
 
   // Endpoints

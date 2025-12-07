@@ -3,12 +3,16 @@ import 'app_routes.dart';
 import '../presentation/bindings/splash_binding.dart';
 import '../presentation/bindings/login_binding.dart';
 import '../presentation/bindings/home_binding.dart';
+import '../presentation/bindings/home_tutor_binding.dart';
+import '../presentation/bindings/home_hijo_binding.dart';
 import '../presentation/bindings/nino_binding.dart';
 import '../presentation/bindings/area_binding.dart';
 import '../presentation/bindings/mapa_binding.dart';
 import '../presentation/pages/splash/splash_page.dart';
 import '../presentation/pages/login/login_page.dart';
 import '../presentation/pages/home/home_page.dart';
+import '../presentation/pages/home/home_tutor_page.dart';
+import '../presentation/pages/home/home_hijo_page.dart';
 import '../presentation/pages/nino/nino_list_page.dart';
 import '../presentation/pages/nino/nino_form_page.dart';
 import '../presentation/pages/area/area_list_page.dart';
@@ -48,6 +52,22 @@ class AppPages {
       name: AppRoutes.home,
       page: () => const HomePage(),
       binding: HomeBinding(),
+      transition: Transition.fade,
+    ),
+
+    // Home Tutor
+    GetPage(
+      name: AppRoutes.homeTutor,
+      page: () => const HomeTutorPage(),
+      binding: HomeTutorBinding(),
+      transition: Transition.fade,
+    ),
+
+    // Home Hijo
+    GetPage(
+      name: AppRoutes.homeHijo,
+      page: () => const HomeHijoPage(),
+      binding: HomeHijoBinding(),
       transition: Transition.fade,
     ),
 

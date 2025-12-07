@@ -7,6 +7,8 @@ class AppRoutes {
 
   // Home
   static const home = '/home';
+  static const homeTutor = '/home-tutor';
+  static const homeHijo = '/home-hijo';
 
   // Niños
   static const ninos = '/ninos';

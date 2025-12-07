@@ -9,10 +9,10 @@ import 'api/api_client.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicializar GetStorage
+  // Inicializar GetStorage (necesario)
   await GetStorage.init();
 
-  // Inicializar API Client
+  // Inicializar API Client (no esperar, hacer en background)
   ApiClient().initialize();
 
   runApp(const MyApp());

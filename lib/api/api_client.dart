@@ -36,21 +36,12 @@ class ApiClient {
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
           }
-          print('🌐 REQUEST[${options.method}] => ${options.path}');
-          print('📦 DATA: ${options.data}');
           return handler.next(options);
         },
         onResponse: (response, handler) {
-          print(
-              '✅ RESPONSE[${response.statusCode}] => ${response.requestOptions.path}');
           return handler.next(response);
         },
         onError: (error, handler) {
-          print(
-              '❌ ERROR[${error.response?.statusCode}] => ${error.requestOptions.path}');
-          print('📛 MESSAGE: ${error.message}');
-          print('📛 DATA: ${error.response?.data}');
-
           // Si el error es 401 (no autorizado), limpiar sesión
           if (error.response?.statusCode == 401) {
             _storage.clearSession();
@@ -61,15 +52,19 @@ class ApiClient {
       ),
     );
 
-    // Interceptor para logging (opcional, solo en desarrollo)
+    // Interceptor para logging DESHABILITADO EN PRODUCCIÓN
+    // Esto consume muchos recursos durante la verificación del token
+    // Descomentar solo para debugging
+    /*
     _dio.interceptors.add(LogInterceptor(
       request: true,
       requestHeader: true,
-      requestBody: true,
+      requestBody: false,
       responseHeader: false,
-      responseBody: true,
+      responseBody: false,
       error: true,
     ));
+    */
   }
 
   /// Manejo de errores HTTP

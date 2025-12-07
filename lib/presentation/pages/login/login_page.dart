@@ -13,6 +13,9 @@ class LoginPage extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(
+        '[LoginPage] Building LoginPage... Controller: ${controller.runtimeType}');
+
     // Inicializar modo si viene de registro
     if (isRegister) {
       WidgetsBinding.instance.addPostFrameCallback((_) {

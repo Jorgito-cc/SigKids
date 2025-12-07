@@ -52,6 +52,32 @@ class LocalStorage {
     await _storage.remove(AppConstants.storageKeyTutor);
   }
 
+  // Datos de hijo
+  Future<void> saveHijo(Map<String, dynamic> hijoData) async {
+    await _storage.write('hijo_data', hijoData);
+  }
+
+  Map<String, dynamic>? getHijo() {
+    return _storage.read<Map<String, dynamic>>('hijo_data');
+  }
+
+  Future<void> removeHijo() async {
+    await _storage.remove('hijo_data');
+  }
+
+  // Tipo de usuario (tutor/hijo)
+  Future<void> saveTipoUsuario(String tipo) async {
+    await _storage.write('tipo_usuario', tipo);
+  }
+
+  String? getTipoUsuario() {
+    return _storage.read<String>('tipo_usuario');
+  }
+
+  Future<void> removeTipoUsuario() async {
+    await _storage.remove('tipo_usuario');
+  }
+
   // Tema
   Future<void> saveThemeMode(String mode) async {
     await _storage.write(AppConstants.storageKeyTheme, mode);
@@ -80,5 +106,7 @@ class LocalStorage {
     await removeToken();
     await removeUser();
     await removeTutor();
+    await removeHijo();
+    await removeTipoUsuario();
   }
 }

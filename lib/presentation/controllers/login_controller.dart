@@ -4,7 +4,6 @@ import '../../api/auth_api.dart';
 import '../../api/tutor_api.dart';
 import '../../config/local_storage.dart';
 import '../../config/app_constants.dart';
-import '../../models/usuario_model.dart';
 import '../../models/tutor_model.dart';
 import '../../routes/app_routes.dart';
 
@@ -29,6 +28,13 @@ class LoginController extends GetxController {
   final isRegisterMode = false.obs;
 
   DateTime? selectedFechaNacimiento;
+
+  @override
+  void onInit() {
+    super.onInit();
+    debugPrint(
+        '[LoginController] ✅ LoginController inicializado correctamente');
+  }
 
   @override
   void onClose() {
@@ -59,39 +65,84 @@ class LoginController extends GetxController {
     try {
       isLoading.value = true;
 
-      // Login
+      // 1. Login y obtener token
       final loginResponse = await _authApi.login(
         emailController.text.trim(),
         passwordController.text,
       );
 
-      // Guardar token
+      // 2. Guardar token
       await _storage.saveToken(loginResponse.accessToken);
 
-      // Obtener datos del usuario
+      // 3. Obtener datos del usuario
       final user = await _authApi.getCurrentUser();
       await _storage.saveUser(user.toJson());
 
+      // 4. Detectar tipo de usuario (tutor o hijo)
+      String tipoUsuario = 'desconocido';
+
       // Intentar obtener datos del tutor
       try {
-        final tutores = await _tutorApi.getTutores();
-        final tutor = tutores.firstWhere(
+        final tutores = await _tutorApi.getTutores(limit: 1000);
+        final tutor = tutores.firstWhereOrNull(
           (t) => t.usuario.id == user.id,
-          orElse: () => throw Exception('Tutor no encontrado'),
         );
-        await _storage.saveTutor(tutor.toJson());
+
+        if (tutor != null) {
+          tipoUsuario = 'tutor';
+          await _storage.saveTutor(tutor.toJson());
+          await _storage.saveTipoUsuario(tipoUsuario);
+        }
       } catch (e) {
-        print('No se encontró tutor asociado: $e');
+        // No es tutor, intentar obtener datos del hijo
       }
 
-      Get.offAllNamed(AppRoutes.home);
-      Get.snackbar(
-        '¡Bienvenido!',
-        'Has iniciado sesión correctamente',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        icon: const Icon(Icons.check_circle, color: Colors.white),
-      );
+      // Si no es tutor, intentar obtener datos del hijo
+      if (tipoUsuario == 'desconocido') {
+        try {
+          // TODO: Implementar cuando HijoApi esté completo
+          // final hijos = await _hijoApi.getHijos(limit: 1000);
+          // final hijo = hijos.firstWhereOrNull((h) => h.usuario.id == user.id);
+          // if (hijo != null) {
+          //   tipoUsuario = 'hijo';
+          //   await _storage.saveHijo(hijo.toJson());
+          //   await _storage.saveTipoUsuario(tipoUsuario);
+          // }
+        } catch (e) {
+          // No es hijo
+        }
+      }
+
+      // 5. Redirigir según tipo de usuario
+      if (tipoUsuario == 'tutor') {
+        Get.offAllNamed(AppRoutes.homeTutor);
+        Get.snackbar(
+          '¡Bienvenido Tutor!',
+          'Has iniciado sesión correctamente',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          icon: const Icon(Icons.check_circle, color: Colors.white),
+        );
+      } else if (tipoUsuario == 'hijo') {
+        Get.offAllNamed(AppRoutes.homeHijo);
+        Get.snackbar(
+          '¡Bienvenido!',
+          'Has iniciado sesión correctamente',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          icon: const Icon(Icons.check_circle, color: Colors.white),
+        );
+      } else {
+        // Usuario sin perfil de tutor ni hijo
+        await _storage.clearSession();
+        Get.snackbar(
+          'Error',
+          'No se encontró un perfil asociado a tu cuenta',
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: const Duration(seconds: 4),
+        );
+      }
     } catch (e) {
       Get.snackbar(
         'Error de autenticación',

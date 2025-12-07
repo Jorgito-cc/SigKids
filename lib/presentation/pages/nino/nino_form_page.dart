@@ -22,7 +22,6 @@ class _NinoFormPageState extends State<NinoFormPage> {
   final _direccionController = TextEditingController();
   final _fechaNacimientoController = TextEditingController();
 
-  DateTime? _selectedDate;
   bool _isLoading = false;
 
   @override
@@ -265,7 +264,6 @@ class _NinoFormPageState extends State<NinoFormPage> {
 
     if (picked != null) {
       setState(() {
-        _selectedDate = picked;
         _fechaNacimientoController.text =
             '${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}';
       });
