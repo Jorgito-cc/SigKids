@@ -13,13 +13,9 @@ class LoginPage extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(
-        '[LoginPage] Building LoginPage... Controller: ${controller.runtimeType}');
-
-    // Inicializar modo si viene de registro
     if (isRegister) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        controller.isRegisterMode.value = true;
+        controller.isRegister.value = true;
       });
     }
 
@@ -29,44 +25,28 @@ class LoginPage extends GetView<LoginController> {
           gradient: AppTheme.backgroundGradient,
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.all(24),
-            child: Obx(() => Column(
+          child: Obx(() => SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: 40),
-
-                    // Logo animado
                     _buildLogo(),
-
                     const SizedBox(height: 40),
-
-                    // Título
                     _buildTitle(),
-
                     const SizedBox(height: 40),
 
-                    // Formulario
-                    if (controller.isRegisterMode.value)
-                      _buildRegisterForm(context)
-                    else
-                      _buildLoginForm(),
+                    controller.isRegister.value
+                        ? _buildRegisterForm(context)
+                        : _buildLoginForm(),
 
                     const SizedBox(height: 24),
-
-                    // Botón principal
                     _buildMainButton(),
-
                     const SizedBox(height: 24),
-
-                    // Toggle entre login y registro
                     _buildToggleButton(),
-
-                    const SizedBox(height: 40),
                   ],
-                )),
-          ),
+                ),
+              )),
         ),
       ),
     );
@@ -84,11 +64,7 @@ class LoginPage extends GetView<LoginController> {
             gradient: AppTheme.primaryGradient,
             boxShadow: AppTheme.glowShadow,
           ),
-          child: const Icon(
-            Icons.child_care,
-            size: 60,
-            color: Colors.white,
-          ),
+          child: const Icon(Icons.child_care, size: 60, color: Colors.white),
         ),
       ),
     );
@@ -100,22 +76,20 @@ class LoginPage extends GetView<LoginController> {
           child: Column(
             children: [
               Text(
-                controller.isRegisterMode.value ? 'Registro' : 'Bienvenido',
+                controller.isRegister.value ? 'Registro' : 'Bienvenido',
                 style: const TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.bold,
                   color: AppTheme.textPrimary,
                 ),
-                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
-              Text(
+              const Text(
                 'SIGKids – Monitoreo Infantil',
                 style: TextStyle(
                   fontSize: 16,
-                  color: AppTheme.textSecondary.withOpacity(0.8),
+                  color: AppTheme.textSecondary,
                 ),
-                textAlign: TextAlign.center,
               ),
             ],
           ),
@@ -130,26 +104,16 @@ class LoginPage extends GetView<LoginController> {
           CustomInput(
             label: 'Email',
             hint: 'tu@email.com',
-            controller: controller.emailController,
-            keyboardType: TextInputType.emailAddress,
+            controller: controller.email,
             prefixIcon: Icons.email_outlined,
           ),
           const SizedBox(height: 20),
           Obx(() => CustomInput(
                 label: 'Contraseña',
                 hint: '••••••••',
-                controller: controller.passwordController,
-                obscureText: controller.obscurePassword.value,
+                controller: controller.password,
+                obscureText: true,
                 prefixIcon: Icons.lock_outlined,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    controller.obscurePassword.value
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                    color: AppTheme.primaryColor,
-                  ),
-                  onPressed: controller.togglePasswordVisibility,
-                ),
               )),
         ],
       ),
@@ -162,68 +126,19 @@ class LoginPage extends GetView<LoginController> {
       child: Column(
         children: [
           CustomInput(
-            label: 'Nombre',
-            hint: 'Tu nombre',
-            controller: controller.nombreController,
-            prefixIcon: Icons.person_outlined,
-          ),
-          const SizedBox(height: 20),
-          CustomInput(
-            label: 'Apellido',
-            hint: 'Tu apellido',
-            controller: controller.apellidoController,
-            prefixIcon: Icons.person_outline,
-          ),
-          const SizedBox(height: 20),
-          CustomInput(
-            label: 'Cédula de Identidad',
-            hint: '12345678',
-            controller: controller.ciController,
-            keyboardType: TextInputType.number,
-            prefixIcon: Icons.badge_outlined,
-          ),
-          const SizedBox(height: 20),
-          CustomInput(
-            label: 'Fecha de Nacimiento',
-            hint: 'DD/MM/AAAA',
-            controller: controller.fechaNacimientoController,
-            readOnly: true,
-            prefixIcon: Icons.calendar_today_outlined,
-            onTap: () => controller.selectFechaNacimiento(context),
-          ),
-          const SizedBox(height: 20),
-          CustomInput(
-            label: 'Dirección',
-            hint: 'Tu dirección',
-            controller: controller.direccionController,
-            prefixIcon: Icons.home_outlined,
-            maxLines: 2,
-          ),
-          const SizedBox(height: 20),
-          CustomInput(
             label: 'Email',
             hint: 'tu@email.com',
-            controller: controller.emailController,
-            keyboardType: TextInputType.emailAddress,
+            controller: controller.email,
             prefixIcon: Icons.email_outlined,
           ),
           const SizedBox(height: 20),
-          Obx(() => CustomInput(
-                label: 'Contraseña',
-                hint: '••••••••',
-                controller: controller.passwordController,
-                obscureText: controller.obscurePassword.value,
-                prefixIcon: Icons.lock_outlined,
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    controller.obscurePassword.value
-                        ? Icons.visibility_outlined
-                        : Icons.visibility_off_outlined,
-                    color: AppTheme.primaryColor,
-                  ),
-                  onPressed: controller.togglePasswordVisibility,
-                ),
-              )),
+          CustomInput(
+            label: 'Contraseña',
+            hint: '••••••••',
+            controller: controller.password,
+            obscureText: true,
+            prefixIcon: Icons.lock_outline,
+          ),
         ],
       ),
     );
@@ -233,14 +148,14 @@ class LoginPage extends GetView<LoginController> {
     return Obx(() => FadeInUp(
           delay: const Duration(milliseconds: 600),
           child: CustomButton(
-            text: controller.isRegisterMode.value
+            text: controller.isRegister.value
                 ? 'Registrarse'
                 : 'Iniciar Sesión',
-            onPressed: controller.isRegisterMode.value
+            onPressed: controller.isRegister.value
                 ? controller.register
                 : controller.login,
             isLoading: controller.isLoading.value,
-            icon: controller.isRegisterMode.value
+            icon: controller.isRegister.value
                 ? Icons.person_add
                 : Icons.login,
           ),
@@ -252,31 +167,17 @@ class LoginPage extends GetView<LoginController> {
           delay: const Duration(milliseconds: 800),
           child: TextButton(
             onPressed: controller.toggleMode,
-            child: RichText(
-              text: TextSpan(
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: AppTheme.textSecondary,
-                ),
-                children: [
-                  TextSpan(
-                    text: controller.isRegisterMode.value
-                        ? '¿Ya tienes cuenta? '
-                        : '¿No tienes cuenta? ',
-                  ),
-                  TextSpan(
-                    text: controller.isRegisterMode.value
-                        ? 'Iniciar Sesión'
-                        : 'Regístrate',
-                    style: const TextStyle(
-                      color: AppTheme.primaryColor,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+            child: Text(
+              controller.isRegister.value
+                  ? '¿Ya tienes cuenta? Inicia sesión'
+                  : '¿No tienes cuenta? Regístrate',
+              style: const TextStyle(
+                color: AppTheme.primaryColor,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
         ));
   }
 }
+

@@ -13,7 +13,7 @@ void main() async {
   await GetStorage.init();
 
   // Inicializar API Client
-  ///ApiClient().initialize();
+  ApiClient().initialize();
 
   runApp(const MyApp());
 }
