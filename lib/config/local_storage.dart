@@ -9,7 +9,9 @@ class LocalStorage {
 
   final GetStorage _storage = GetStorage();
 
-  // Token de autenticación
+  // --------------------------
+  // TOKEN
+  // --------------------------
   Future<void> saveToken(String token) async {
     await _storage.write(AppConstants.storageKeyToken, token);
   }
@@ -26,7 +28,9 @@ class LocalStorage {
     return _storage.hasData(AppConstants.storageKeyToken);
   }
 
-  // Datos de usuario
+  // --------------------------
+  // USUARIO
+  // --------------------------
   Future<void> saveUser(Map<String, dynamic> userData) async {
     await _storage.write(AppConstants.storageKeyUser, userData);
   }
@@ -39,7 +43,9 @@ class LocalStorage {
     await _storage.remove(AppConstants.storageKeyUser);
   }
 
-  // Datos de tutor
+  // --------------------------
+  // TUTOR
+  // --------------------------
   Future<void> saveTutor(Map<String, dynamic> tutorData) async {
     await _storage.write(AppConstants.storageKeyTutor, tutorData);
   }
@@ -52,7 +58,9 @@ class LocalStorage {
     await _storage.remove(AppConstants.storageKeyTutor);
   }
 
-  // Datos de hijo
+  // --------------------------
+  // HIJO
+  // --------------------------
   Future<void> saveHijo(Map<String, dynamic> hijoData) async {
     await _storage.write('hijo_data', hijoData);
   }
@@ -65,7 +73,9 @@ class LocalStorage {
     await _storage.remove('hijo_data');
   }
 
-  // Tipo de usuario (tutor/hijo)
+  // --------------------------
+  // Tipo Usuario
+  // --------------------------
   Future<void> saveTipoUsuario(String tipo) async {
     await _storage.write('tipo_usuario', tipo);
   }
@@ -78,7 +88,9 @@ class LocalStorage {
     await _storage.remove('tipo_usuario');
   }
 
+  // --------------------------
   // Tema
+  // --------------------------
   Future<void> saveThemeMode(String mode) async {
     await _storage.write(AppConstants.storageKeyTheme, mode);
   }
@@ -87,7 +99,9 @@ class LocalStorage {
     return _storage.read<String>(AppConstants.storageKeyTheme) ?? 'dark';
   }
 
+  // --------------------------
   // Primera vez
+  // --------------------------
   Future<void> setFirstTime(bool isFirst) async {
     await _storage.write(AppConstants.storageKeyFirstTime, isFirst);
   }
@@ -96,12 +110,16 @@ class LocalStorage {
     return _storage.read<bool>(AppConstants.storageKeyFirstTime) ?? true;
   }
 
+  // --------------------------
   // Limpiar todo
+  // --------------------------
   Future<void> clearAll() async {
     await _storage.erase();
   }
 
-  // Limpiar sesión
+  // --------------------------
+  // Limpiar solo sesión
+  // --------------------------
   Future<void> clearSession() async {
     await removeToken();
     await removeUser();

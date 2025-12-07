@@ -1,36 +1,53 @@
 import 'package:dio/dio.dart';
-import '../models/usuario_model.dart';
 import '../config/app_constants.dart';
 import 'api_client.dart';
 
+/// MODELO DE RESPUESTA LOGIN (TOKEN)
+class LoginResponseModel {
+  final String accessToken;
+  final String tokenType;
+
+  LoginResponseModel({
+    required this.accessToken,
+    required this.tokenType,
+  });
+
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
+    return LoginResponseModel(
+      accessToken: json['access_token'],
+      tokenType: json['token_type'],
+    );
+  }
+}
+
 /// Servicio de autenticación
 class AuthApi {
-  final Dio _dio = ApiClient().dio;
+  static final Dio _dio = ApiClient().dio;
 
-  /// Registrar nuevo usuario
-  Future<UsuarioModel> register(String email, String password) async {
+  // ----------------------------------------
+  // REGISTRO
+  // ----------------------------------------
+  static Future<bool> register(Map<String, dynamic> data) async {
     try {
       final response = await _dio.post(
         '${AppConstants.authEndpoint}/register',
-        data: {
-          'email': email,
-          'password': password,
-        },
+        data: data,
       );
 
-      return UsuarioModel.fromJson(response.data);
+      return response.statusCode == 200 || response.statusCode == 201;
     } on DioException catch (e) {
       throw ApiClient().handleError(e);
     }
   }
 
-  /// Iniciar sesión
-  Future<LoginResponseModel> login(String email, String password) async {
+  // ----------------------------------------
+  // LOGIN
+  // ----------------------------------------
+  static Future<String?> login(String email, String password) async {
     try {
-      // FastAPI-Users espera form data para login
       final formData = FormData.fromMap({
-        'username': email, // FastAPI-Users usa 'username' para el email
-        'password': password,
+        "username": email,
+        "password": password,
       });
 
       final response = await _dio.post(
@@ -41,14 +58,18 @@ class AuthApi {
         ),
       );
 
-      return LoginResponseModel.fromJson(response.data);
+      final loginData = LoginResponseModel.fromJson(response.data);
+
+      return loginData.accessToken;
     } on DioException catch (e) {
       throw ApiClient().handleError(e);
     }
   }
 
-  /// Cerrar sesión
-  Future<void> logout() async {
+  // ----------------------------------------
+  // LOGOUT
+  // ----------------------------------------
+  static Future<void> logout() async {
     try {
       await _dio.post('${AppConstants.authEndpoint}/jwt/logout');
     } on DioException catch (e) {
@@ -56,50 +77,27 @@ class AuthApi {
     }
   }
 
-  /// Obtener usuario actual
-  Future<UsuarioModel> getCurrentUser() async {
+  // ----------------------------------------
+  // USUARIO ACTUAL
+  // ----------------------------------------
+  static Future<Map<String, dynamic>> getCurrentUser() async {
     try {
       final response = await _dio.get('/users/me');
-      return UsuarioModel.fromJson(response.data);
+      return response.data;
     } on DioException catch (e) {
       throw ApiClient().handleError(e);
     }
   }
 
-  /// Verificar si el token es válido
-  Future<bool> verifyToken() async {
+  // ----------------------------------------
+  // VERIFICAR TOKEN
+  // ----------------------------------------
+  static Future<bool> verifyToken() async {
     try {
       await getCurrentUser();
       return true;
-    } catch (e) {
+    } catch (_) {
       return false;
-    }
-  }
-
-  /// Solicitar restablecimiento de contraseña
-  Future<void> requestPasswordReset(String email) async {
-    try {
-      await _dio.post(
-        '${AppConstants.authEndpoint}/forgot-password',
-        data: {'email': email},
-      );
-    } on DioException catch (e) {
-      throw ApiClient().handleError(e);
-    }
-  }
-
-  /// Restablecer contraseña
-  Future<void> resetPassword(String token, String newPassword) async {
-    try {
-      await _dio.post(
-        '${AppConstants.authEndpoint}/reset-password',
-        data: {
-          'token': token,
-          'password': newPassword,
-        },
-      );
-    } on DioException catch (e) {
-      throw ApiClient().handleError(e);
     }
   }
 }
