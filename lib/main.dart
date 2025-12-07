@@ -9,11 +9,11 @@ import 'api/api_client.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Inicializar GetStorage (necesario)
+  // Inicializar GetStorage
   await GetStorage.init();
 
-  // Inicializar API Client (no esperar, hacer en background)
-  ApiClient().initialize();
+  // Inicializar API Client
+  ///ApiClient().initialize();
 
   runApp(const MyApp());
 }
@@ -25,11 +25,19 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'SIGKids - Monitoreo Infantil',
+
+      // Tema
       theme: AppTheme.darkTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark,
+
+      // 🚀 ESTA ES LA RUTA INICIAL CORRECTA
       initialRoute: AppRoutes.splash,
+
+      // Páginas GetX
       getPages: AppPages.pages,
+
+      // Config extra
       debugShowCheckedModeBanner: false,
       defaultTransition: Transition.cupertino,
       transitionDuration: const Duration(milliseconds: 300),
