@@ -107,4 +107,29 @@ class TutorApi {
       throw ApiClient().handleError(e);
     }
   }
+
+  // Obtener tutor con hijos
+  static Future<TutorModel> getTutor(int tutorId) async {
+    final dio = ApiClient().dio;
+    final res = await dio.get("/tutor/$tutorId/hijos");
+    return TutorModel.fromJson(res.data);
+  }
+
+  // Agregar hijo al tutor por email
+  static Future<TutorModel> addHijo(int tutorId, String email) async {
+    final dio = ApiClient().dio;
+    final res = await dio.post("/tutor/$tutorId/hijos", data: {
+      "hijo_email": email,
+    });
+    return TutorModel.fromJson(res.data);
+  }
+
+  // Eliminar un hijo del tutor
+  static Future<TutorModel> removeHijo(int tutorId, int hijoId) async {
+    final dio = ApiClient().dio;
+    final res = await dio.delete("/tutor/$tutorId/hijos", data: {
+      "hijo_id": hijoId,
+    });
+    return TutorModel.fromJson(res.data);
+  }
 }

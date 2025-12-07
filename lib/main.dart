@@ -24,12 +24,13 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.darkTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark,
-
-      /// 🚀 DIRECTO AL LOGIN
       initialRoute: AppRoutes.login,
-
       getPages: AppPages.pages,
       debugShowCheckedModeBanner: false,
+      defaultTransition: Transition.cupertino,
+      transitionDuration: const Duration(milliseconds: 300),
+      locale: const Locale('es', 'ES'),
+      fallbackLocale: const Locale('es', 'ES'),
     );
   }
 }

@@ -151,8 +151,9 @@ class LoginPage extends GetView<LoginController> {
   Widget _mainButton() {
     return Obx(() => CustomButton(
           text: controller.isRegister.value ? "Registrarse" : "Iniciar sesión",
-          onPressed:
-              controller.isRegister.value ? controller.register : controller.login,
+          onPressed: controller.isRegister.value
+              ? controller.register
+              : controller.login,
           isLoading: controller.loading.value,
         ));
   }

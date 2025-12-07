@@ -64,7 +64,31 @@ class TutorModel {
     );
   }
 }
+class HijoModel {
+  final int id;
+  final String nombre;
+  final String apellido;
+  final String fechaNacimiento;
+  final String telefono;
 
+  HijoModel({
+    required this.id,
+    required this.nombre,
+    required this.apellido,
+    required this.fechaNacimiento,
+    required this.telefono,
+  });
+
+  factory HijoModel.fromJson(Map<String, dynamic> json) {
+    return HijoModel(
+      id: json["id"],
+      nombre: json["nombre"],
+      apellido: json["apellido"],
+      fechaNacimiento: json["fecha_nacimiento"],
+      telefono: json["telefono"] ?? "",
+    );
+  }
+}
 /// Modelo para crear Tutor
 @JsonSerializable()
 class TutorCreateModel {

@@ -14,7 +14,9 @@ class AppConstants {
 
   // Storage Keys
   static const String storageKeyToken = 'auth_token';
+  static const String storageKeyUserId = 'user_id';
   static const String storageKeyUser = 'user_data';
+  static const String storageKeyUserRole = 'user_role'; // 'tutor' o 'hijo'
   static const String storageKeyTutor = 'tutor_data';
   static const String storageKeyTheme = 'theme_mode';
   static const String storageKeyFirstTime = 'is_first_time';

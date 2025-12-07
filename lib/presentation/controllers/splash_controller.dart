@@ -1,14 +1,24 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../routes/app_routes.dart';
+import '../pages/login/login_page.dart';
+import '../bindings/login_binding.dart';
 
 class SplashController extends GetxController {
   @override
-  void onReady() {
-    super.onReady();
+  void onInit() {
+    super.onInit();
+    _showSplash();
+  }
 
-    // Solo espera y va al Login SIN verificar token
-    Future.delayed(const Duration(seconds: 2), () {
-      Get.offAllNamed(AppRoutes.login);
-    });
+  Future<void> _showSplash() async {
+    debugPrint('[SplashController] ✅ Mostrando splash por 800ms...');
+    await Future.delayed(const Duration(milliseconds: 800));
+    debugPrint('[SplashController] 🚀 Navegando a login...');
+    Get.offAll(
+      const LoginPage(),
+      binding: LoginBinding(),
+      transition: Transition.fadeIn,
+      duration: const Duration(milliseconds: 300),
+    );
   }
 }
