@@ -35,17 +35,17 @@ class RegisterTutorPage extends GetView<LoginController> {
               duration: const Duration(milliseconds: 600),
               child: Column(
                 children: [
-                   Container(
+                  Container(
                     width: 100,
                     height: 100,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       gradient: AppTheme.primaryGradient,
                     ),
-                    child: const Icon(Icons.person_add, size: 50, color: Colors.white),
+                    child: const Icon(Icons.person_add,
+                        size: 50, color: Colors.white),
                   ),
                   const SizedBox(height: 30),
-                  
                   CustomInput(
                     label: "Nombre",
                     controller: controller.name,
@@ -101,9 +101,38 @@ class RegisterTutorPage extends GetView<LoginController> {
                   const SizedBox(height: 40),
                   Obx(() => CustomButton(
                         text: "Completar Registro",
-                        onPressed: controller.register,
                         isLoading: controller.loading.value,
-                      )),
+                        onPressed: () {
+                          // Validación básica
+                          if (controller.name.text.trim().isEmpty ||
+                              controller.lastname.text.trim().isEmpty ||
+                              controller.ci.text.trim().isEmpty ||
+                              controller.birth.text.trim().isEmpty ||
+                              controller.address.text.trim().isEmpty ||
+                              controller.email.text.trim().isEmpty ||
+                              controller.password.text.trim().isEmpty) {
+                            Get.snackbar(
+                              "Campos incompletos",
+                              "Por favor completa todos los campos",
+                              snackPosition: SnackPosition.BOTTOM,
+                            );
+                            return;
+                          }
+
+                          print("====================================");
+                          print("🟢 REGISTRO TUTOR — DATOS DEL FORM");
+                          print("👤 Nombre: ${controller.name.text}");
+                          print("👤 Apellido: ${controller.lastname.text}");
+                          print("🪪 CI: ${controller.ci.text}");
+                          print("🎂 Fecha Nac: ${controller.birth.text}");
+                          print("🏠 Dirección: ${controller.address.text}");
+                          print("📧 Email: ${controller.email.text}");
+                          print("🔑 Password: ${controller.password.text}");
+                          print("====================================");
+
+                          controller.register();
+                        },
+                      ))
                 ],
               ),
             ),

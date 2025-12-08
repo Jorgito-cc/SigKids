@@ -91,16 +91,16 @@ class HomeHijoController extends GetxController {
       final hijoId = hijoData['id'] as int;
       debugPrint("📤 Solicitando áreas a API con hijoId: $hijoId");
 
-      final hijoWithAreas = await _hijoApi.getHijoWithAreas(hijoId);
-      debugPrint("📥 Respuesta API áreas: $hijoWithAreas");
+     // final hijoWithAreas = await _hijoApi.getHijoWithAreas(hijoId);
+     // debugPrint("📥 Respuesta API áreas: $hijoWithAreas");
 
-      final areasList = hijoWithAreas['areas'] as List?;
-      if (areasList != null) {
-        areas.value = areasList.cast<Map<String, dynamic>>();
-        debugPrint("✅ Áreas cargadas: ${areas.length}");
-      } else {
-        debugPrint("📭 El hijo no tiene áreas asignadas.");
-      }
+      //final areasList = hijoWithAreas['areas'] as List?;
+      //if (areasList != null) {
+      //  areas.value = areasList.cast<Map<String, dynamic>>();
+       // debugPrint("✅ Áreas cargadas: ${areas.length}");
+     // } else {
+       // debugPrint("📭 El hijo no tiene áreas asignadas.");
+     // }
     } catch (e) {
       debugPrint("❌ ERROR cargando áreas: $e");
     } finally {

@@ -120,7 +120,24 @@ class RegisterHijoPage extends GetView<LoginController> {
                   Obx(
                     () => CustomButton(
                       text: "Completar Registro",
-                      onPressed: controller.register,
+                      onPressed: () {
+                        // Validación básica
+                        if (controller.name.text.trim().isEmpty ||
+                            controller.lastname.text.trim().isEmpty ||
+                            controller.birth.text.trim().isEmpty ||
+                            controller.address.text.trim().isEmpty ||
+                            controller.email.text.trim().isEmpty ||
+                            controller.password.text.trim().isEmpty) {
+                          Get.snackbar(
+                            "Campos incompletos",
+                            "Por favor completa todos los campos obligatorios",
+                            snackPosition: SnackPosition.BOTTOM,
+                          );
+                          return;
+                        }
+
+                        controller.register();
+                      },
                       isLoading: controller.loading.value,
                     ),
                   ),

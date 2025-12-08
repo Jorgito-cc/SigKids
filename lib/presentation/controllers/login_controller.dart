@@ -19,6 +19,7 @@ class LoginController extends GetxController {
   final birth = TextEditingController();
   final address = TextEditingController();
   final phone = TextEditingController(); // hijo
+    final rol = TextEditingController(); // hijo
 
   // --------------------------
   // ESTADOS
@@ -252,6 +253,43 @@ class LoginController extends GetxController {
   // REGISTRO
   // --------------------------
   Future<void> register() async {
+    // Validación de campos
+    if (email.text.trim().isEmpty || password.text.trim().isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Email y contraseña son obligatorios",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    if (name.text.trim().isEmpty || lastname.text.trim().isEmpty) {
+      Get.snackbar(
+        "Error",
+        "Nombre y apellido son obligatorios",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    if (isTutor.value && ci.text.trim().isEmpty) {
+      Get.snackbar(
+        "Error",
+        "La cédula es obligatoria para tutores",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
+    if (birth.text.trim().isEmpty) {
+      Get.snackbar(
+        "Error",
+        "La fecha de nacimiento es obligatoria",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     loading.value = true;
 
     final rol = isTutor.value ? "tutor" : "hijo";
@@ -269,8 +307,8 @@ class LoginController extends GetxController {
       final userResp = await _dio.post(
         "/auth/register",
         data: {
-          "email": email.text,
-          "password": password.text,
+          "email": email.text.trim(),
+          "password": password.text.trim(),
           "rol": rol,
         },
       );
@@ -283,20 +321,67 @@ class LoginController extends GetxController {
 
       debugPrint("👤 Usuario ID guardado: $userId");
 
+      // Hacer login automático para obtener el token
+      debugPrint("🔐 Haciendo login automático para obtener token...");
+      
+      final formData = dio.FormData.fromMap({
+        "username": email.text.trim(),
+        "password": password.text.trim(),
+      });
+
+      final loginResp = await _dio.post(
+        "/auth/jwt/login",
+        data: formData,
+        options: dio.Options(contentType: "application/x-www-form-urlencoded"),
+      );
+
+      final token = loginResp.data["access_token"];
+      await _storage.saveToken(token);
+      debugPrint("🔐 TOKEN GUARDADO: $token");
+
       if (isTutor.value) {
         debugPrint("🟦 Registrando PERFIL TUTOR...");
         await _crearTutor(userId);
         debugPrint("✅ Tutor creado correctamente");
+        Get.snackbar(
+          "¡Éxito!",
+          "Registro completado correctamente",
+          snackPosition: SnackPosition.BOTTOM,
+        );
         Get.offAllNamed(AppRoutes.homeTutor);
       } else {
         debugPrint("🟪 Registrando PERFIL HIJO...");
         await _crearHijo(userId);
         debugPrint("✅ Hijo creado correctamente");
+        Get.snackbar(
+          "¡Éxito!",
+          "Registro completado correctamente",
+          snackPosition: SnackPosition.BOTTOM,
+        );
         Get.offAllNamed(AppRoutes.homeHijo);
       }
     } catch (e) {
       debugPrint("❌ ERROR EN REGISTRO: $e");
-      Get.snackbar("Error", "No se pudo registrar");
+      
+      String errorMessage = "Error al registrar. Intenta nuevamente.";
+      
+      if (e is dio.DioException) {
+        if (e.response?.statusCode == 400) {
+          errorMessage = "El email ya está registrado o los datos son inválidos";
+        } else if (e.response?.statusCode == 422) {
+          errorMessage = "Datos inválidos. Verifica la información";
+        } else if (e.response != null) {
+          errorMessage = e.response?.data["detail"] ?? errorMessage;
+        }
+        debugPrint("❌ Detalles del error: ${e.response?.data}");
+      }
+      
+      Get.snackbar(
+        "Error",
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        duration: const Duration(seconds: 4),
+      );
     } finally {
       loading.value = false;
     }
@@ -306,61 +391,83 @@ class LoginController extends GetxController {
   // CREAR TUTOR
   // --------------------------
   Future<void> _crearTutor(int userId) async {
-    final token = _storage.getToken();
+    final token = await _storage.getToken();
 
-    debugPrint("📤 Enviando datos TUTOR a /tutor/");
-    debugPrint("📦 Payload tutor:");
-    debugPrint("   → nombre: ${name.text}");
-    debugPrint("   → apellido: ${lastname.text}");
-    debugPrint("   → ci: ${ci.text}");
-    debugPrint("   → direccion: ${address.text}");
-    debugPrint("   → fecha_nacimiento: ${birth.text}");
-    debugPrint("   → usuario_id: $userId");
+    try {
+      debugPrint("📤 Enviando datos TUTOR a /tutor/");
+      debugPrint("📦 Payload tutor:");
+      debugPrint("   → nombre: ${name.text}");
+      debugPrint("   → apellido: ${lastname.text}");
+      debugPrint("   → ci: ${ci.text}");
+      debugPrint("   → direccion: ${address.text}");
+      debugPrint("   → fecha_nacimiento: ${birth.text}");
+      debugPrint("   → usuario_id: $userId");
 
-    final resp = await _dio.post(
-      "/tutor/",
-      data: {
-        "nombre": name.text,
-        "apellido": lastname.text,
-        "ci": ci.text,
-        "direccion": address.text,
-        "fecha_nacimiento": birth.text,
-        "usuario_id": userId,
-      },
-      options: dio.Options(headers: {"Authorization": "Bearer $token"}),
-    );
+      final resp = await _dio.post(
+        "/tutor/",
+        data: {
+          "nombre": name.text.trim(),
+          "apellido": lastname.text.trim(),
+          "ci": ci.text.trim(),
+          "direccion": address.text.trim(),
+          "fecha_nacimiento": birth.text.trim(),
+          "rol": "tutor",
+          "usuario_id": userId,
+        },
+        options: dio.Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json"
+          },
+        ),
+      );
 
-    debugPrint("📥 Respuesta crear tutor: ${resp.data}");
+      debugPrint("✅ Tutor creado: ${resp.data}");
+    } on dio.DioException catch (e) {
+      debugPrint("❌ ERROR AL CREAR TUTOR: ${e.response?.data}");
+      rethrow;
+    } catch (e) {
+      debugPrint("❌ ERROR INESPERADO AL CREAR TUTOR: $e");
+      rethrow;
+    }
   }
 
   // --------------------------
   // CREAR HIJO
   // --------------------------
   Future<void> _crearHijo(int userId) async {
-    final token = _storage.getToken();
+    final token = await _storage.getToken();
 
-    debugPrint("📤 Enviando datos HIJO a /hijo/");
-    debugPrint("📦 Payload hijo:");
-    debugPrint("   → nombre: ${name.text}");
-    debugPrint("   → apellido: ${lastname.text}");
-    debugPrint("   → direccion: ${address.text}");
-    debugPrint("   → fecha_nacimiento: ${birth.text}");
-    debugPrint("   → telefono: ${phone.text}");
-    debugPrint("   → usuario_id: $userId");
+    try {
+      debugPrint("📤 Enviando datos HIJO a /hijo/");
+      debugPrint("📦 Payload hijo:");
+      debugPrint("   → nombre: ${name.text}");
+      debugPrint("   → apellido: ${lastname.text}");
+      debugPrint("   → direccion: ${address.text}");
+      debugPrint("   → fecha_nacimiento: ${birth.text}");
+      debugPrint("   → telefono: ${phone.text}");
+      debugPrint("   → usuario_id: $userId");
 
-    final resp = await _dio.post(
-      "/hijo/",
-      data: {
-        "nombre": name.text,
-        "apellido": lastname.text,
-        "direccion": address.text,
-        "fecha_nacimiento": birth.text,
-        "telefono": phone.text,
-        "usuario_id": userId,
-      },
-      options: dio.Options(headers: {"Authorization": "Bearer $token"}),
-    );
+      final resp = await _dio.post(
+        "/hijo/",
+        data: {
+          "nombre": name.text.trim(),
+          "apellido": lastname.text.trim(),
+          "direccion": address.text.trim(),
+          "fecha_nacimiento": birth.text.trim(),
+          "telefono": phone.text.trim(),
+          "usuario_id": userId,
+        },
+        options: dio.Options(headers: {"Authorization": "Bearer $token"}),
+      );
 
-    debugPrint("📥 Respuesta crear hijo: ${resp.data}");
+      debugPrint("📥 Respuesta crear hijo: ${resp.data}");
+    } on dio.DioException catch (e) {
+      debugPrint("❌ ERROR AL CREAR HIJO: ${e.response?.data}");
+      rethrow;
+    } catch (e) {
+      debugPrint("❌ ERROR INESPERADO AL CREAR HIJO: $e");
+      rethrow;
+    }
   }
 }
