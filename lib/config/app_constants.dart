@@ -2,7 +2,7 @@
 class AppConstants {
   // API Configuration
   static const String baseUrl =
-      'http://192.168.0.7:8000'; // Cambiar por tu IP o dominio
+      'https://geolocalozacion-production.up.railway.app';
   static const String apiVersion = 'v1';
 
   // Endpoints
@@ -18,6 +18,10 @@ class AppConstants {
   static const String storageKeyUser = 'user_data';
   static const String storageKeyUserRole = 'user_role'; // 'tutor' o 'hijo'
   static const String storageKeyTutor = 'tutor_data';
+
+  // 🔥 FALTABA ESTA LÍNEA
+  static const String storageKeyHijo = 'hijo_data';
+
   static const String storageKeyTheme = 'theme_mode';
   static const String storageKeyFirstTime = 'is_first_time';
 

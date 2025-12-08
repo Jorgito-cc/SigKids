@@ -10,6 +10,11 @@ class HomeTutorPage extends GetView<HomeTutorController> {
 
   @override
   Widget build(BuildContext context) {
+    print("📄 HomeTutorPage → build()");
+    print("👤 Tutor actual: ${controller.tutorNombre.value}");
+    print("👶 Total hijos: ${controller.totalHijos.value}");
+    print("📍 Total áreas: ${controller.totalAreas.value}");
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
@@ -31,21 +36,29 @@ class HomeTutorPage extends GetView<HomeTutorController> {
                         '¡Hola Tutor!',
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
-                      Obx(() => Text(
-                            controller.tutorNombre.value,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          )),
+                      Obx(() {
+                        print("🔄 Actualizando nombre tutor: ${controller.tutorNombre.value}");
+                        return Text(
+                          controller.tutorNombre.value,
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        );
+                      }),
                     ],
                   ),
                 ),
                 actions: [
                   IconButton(
                     icon: const Icon(Icons.notifications_outlined),
-                    onPressed: () {},
+                    onPressed: () {
+                      print("🔔 PRESIONADO → Notificaciones");
+                    },
                   ),
                   IconButton(
                     icon: const Icon(Icons.person_outline),
-                    onPressed: () => Get.toNamed(AppRoutes.perfil),
+                    onPressed: () {
+                      print("👤 PRESIONADO → Perfil");
+                      Get.toNamed(AppRoutes.perfil);
+                    },
                   ),
                 ],
               ),
@@ -63,29 +76,32 @@ class HomeTutorPage extends GetView<HomeTutorController> {
                           style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 16),
-                        Obx(() => Row(
-                              children: [
-                                Expanded(
-                                  child: _buildStatCard(
-                                    context,
-                                    'Hijos',
-                                    controller.totalHijos.value.toString(),
-                                    Icons.child_care,
-                                    AppTheme.primaryGradient,
-                                  ),
+                        Obx(() {
+                          print("📊 Render estadisticas → Hijos: ${controller.totalHijos.value}, Áreas: ${controller.totalAreas.value}");
+                          return Row(
+                            children: [
+                              Expanded(
+                                child: _buildStatCard(
+                                  context,
+                                  'Hijos',
+                                  controller.totalHijos.value.toString(),
+                                  Icons.child_care,
+                                  AppTheme.primaryGradient,
                                 ),
-                                const SizedBox(width: 12),
-                                Expanded(
-                                  child: _buildStatCard(
-                                    context,
-                                    'Áreas',
-                                    controller.totalAreas.value.toString(),
-                                    Icons.location_on,
-                                    AppTheme.successGradient,
-                                  ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: _buildStatCard(
+                                  context,
+                                  'Áreas',
+                                  controller.totalAreas.value.toString(),
+                                  Icons.location_on,
+                                  AppTheme.successGradient,
                                 ),
-                              ],
-                            )),
+                              ),
+                            ],
+                          );
+                        }),
                       ],
                     ),
                   ),
@@ -114,7 +130,10 @@ class HomeTutorPage extends GetView<HomeTutorController> {
                                 'Agregar Hijo',
                                 Icons.person_add,
                                 AppTheme.primaryColor,
-                                () => Get.toNamed(AppRoutes.ninoCreate),
+                                () {
+                                  print("➕ Acción rápida → Agregar Hijo");
+                                  Get.toNamed(AppRoutes.asignarHijo);
+                                },
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -124,7 +143,10 @@ class HomeTutorPage extends GetView<HomeTutorController> {
                                 'Crear Área',
                                 Icons.add_location,
                                 AppTheme.successColor,
-                                () => Get.toNamed(AppRoutes.areaCreate),
+                                () {
+                                  print("📍 Acción rápida → Crear Área");
+                                  Get.toNamed(AppRoutes.areaCreate);
+                                },
                               ),
                             ),
                           ],
@@ -138,7 +160,10 @@ class HomeTutorPage extends GetView<HomeTutorController> {
                                 'Monitoreo',
                                 Icons.map,
                                 AppTheme.accentColor,
-                                () => Get.toNamed(AppRoutes.mapaMonitoreo),
+                                () {
+                                  print("🛰️ Acción rápida → Monitoreo");
+                                  Get.toNamed(AppRoutes.mapaMonitoreo);
+                                },
                               ),
                             ),
                             const SizedBox(width: 12),
@@ -148,7 +173,10 @@ class HomeTutorPage extends GetView<HomeTutorController> {
                                 'Historial',
                                 Icons.history,
                                 AppTheme.warningColor,
-                                () => Get.toNamed(AppRoutes.historial),
+                                () {
+                                  print("📜 Acción rápida → Historial");
+                                  Get.toNamed(AppRoutes.historial);
+                                },
                               ),
                             ),
                           ],
@@ -176,27 +204,37 @@ class HomeTutorPage extends GetView<HomeTutorController> {
                               style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             TextButton(
-                              onPressed: () => Get.toNamed(AppRoutes.ninos),
+                              onPressed: () {
+                                print("👶 PRESIONADO → Ver todos los hijos");
+                                Get.toNamed(AppRoutes.ninos);
+                              },
                               child: const Text('Ver todos'),
                             ),
                           ],
                         ),
                         const SizedBox(height: 16),
                         Obx(() {
+                          print("🔄 Actualizando lista de hijos…");
+                          
                           if (controller.isLoading.value) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
+                            print("⏳ Cargando hijos…");
+                            return const Center(child: CircularProgressIndicator());
                           }
 
                           if (controller.hijos.isEmpty) {
+                            print("⚠️ No hay hijos registrados");
                             return _buildEmptyState(context);
                           }
+
+                          print("📋 Renderizando hijos (máximo 3) → ${controller.hijos.length}");
 
                           return Column(
                             children: controller.hijos
                                 .take(3)
-                                .map((hijo) => _buildHijoCard(context, hijo))
+                                .map((hijo) {
+                                  print("👦 Render hijo: $hijo");
+                                  return _buildHijoCard(context, hijo);
+                                })
                                 .toList(),
                           );
                         }),
@@ -209,8 +247,12 @@ class HomeTutorPage extends GetView<HomeTutorController> {
           ),
         ),
       ),
+
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => Get.toNamed(AppRoutes.mapaMonitoreo),
+        onPressed: () {
+          print("🛰️ FAB → Monitoreo GPS");
+          Get.toNamed(AppRoutes.mapaMonitoreo);
+        },
         icon: const Icon(Icons.map),
         label: const Text('Monitoreo'),
         backgroundColor: AppTheme.primaryColor,
@@ -225,6 +267,8 @@ class HomeTutorPage extends GetView<HomeTutorController> {
     IconData icon,
     Gradient gradient,
   ) {
+    print("📦 Construyendo StatCard → $label : $value");
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -240,15 +284,15 @@ class HomeTutorPage extends GetView<HomeTutorController> {
           Text(
             value,
             style: Theme.of(context).textTheme.displaySmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Text(
             label,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Colors.white70,
-                ),
+              color: Colors.white70,
+            ),
           ),
         ],
       ),
@@ -262,8 +306,13 @@ class HomeTutorPage extends GetView<HomeTutorController> {
     Color color,
     VoidCallback onTap,
   ) {
+    print("🎯 Render ActionCard → $label");
+
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        print("👆 PRESIONADO → $label");
+        onTap();
+      },
       borderRadius: BorderRadius.circular(16),
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -288,6 +337,8 @@ class HomeTutorPage extends GetView<HomeTutorController> {
   }
 
   Widget _buildHijoCard(BuildContext context, Map<String, dynamic> hijo) {
+    print("🧩 Construyendo tarjeta de hijo: ${hijo['nombre']}");
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -330,7 +381,9 @@ class HomeTutorPage extends GetView<HomeTutorController> {
           IconButton(
             icon: const Icon(Icons.location_on),
             color: AppTheme.accentColor,
-            onPressed: () {},
+            onPressed: () {
+              print("📍 Ver ubicación de hijo: ${hijo['nombre']}");
+            },
           ),
         ],
       ),
@@ -338,6 +391,8 @@ class HomeTutorPage extends GetView<HomeTutorController> {
   }
 
   Widget _buildEmptyState(BuildContext context) {
+    print("📭 Renderizando empty state (sin hijos)");
+
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(

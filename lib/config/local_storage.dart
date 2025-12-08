@@ -8,51 +8,73 @@ class LocalStorage {
 
   final box = GetStorage();
 
-  // --------------------------
+  // ==========================
   // TOKEN
-  // --------------------------
-  Future<void> saveToken(String token) async =>
-      box.write(AppConstants.storageKeyToken, token);
+  // ==========================
+  Future<void> saveToken(String token) async {
+    await box.write(AppConstants.storageKeyToken, token);
+    await box.save();
+  }
 
   String? getToken() => box.read(AppConstants.storageKeyToken);
 
-  // --------------------------
-  // ROL (TUTOR O HIJO)
-  // --------------------------
-  Future<void> saveUserRole(String role) async =>
-      box.write(AppConstants.storageKeyUserRole, role);
+  // ==========================
+  // ROL
+  // ==========================
+  Future<void> saveUserRole(String role) async {
+    await box.write(AppConstants.storageKeyUserRole, role);
+    await box.save();
+  }
 
-  String? getUserRole() => box.read(AppConstants.storageKeyUserRole);
+  String getUserRole() =>
+      box.read(AppConstants.storageKeyUserRole) ?? "hijo";
 
   bool isTutor() => getUserRole() == 'tutor';
   bool isHijo() => getUserRole() == 'hijo';
 
-  // --------------------------
-  // TUTOR
-  // --------------------------
-  Future<void> saveTutor(Map<String, dynamic> data) async =>
-      box.write(AppConstants.storageKeyTutor, data);
-
-  Map<String, dynamic>? getTutor() => box.read(AppConstants.storageKeyTutor);
-
-  // --------------------------
-  // HIJO
-  // --------------------------
-  Future<void> saveHijo(Map<String, dynamic> data) async =>
-      box.write('hijo_data', data);
-
-  Map<String, dynamic>? getHijo() => box.read('hijo_data');
-
-  // --------------------------
+  // ==========================
   // USER ID
-  // --------------------------
-  Future<void> saveUserId(int id) async =>
-      box.write(AppConstants.storageKeyUserId, id);
+  // ==========================
+  Future<void> saveUserId(int id) async {
+    await box.write(AppConstants.storageKeyUserId, id);
+    await box.save();
+  }
 
   int? getUserId() => box.read(AppConstants.storageKeyUserId);
 
-  // --------------------------
-  // LIMPIAR SESIÓN
-  // --------------------------
-  Future<void> clearSession() async => box.erase();
+  // ==========================
+  // DATOS TUTOR
+  // ==========================
+  Future<void> saveTutor(Map<String, dynamic> data) async {
+    await box.write(AppConstants.storageKeyTutor, data);
+    await box.save();
+  }
+
+  Map<String, dynamic>? getTutor() =>
+      box.read(AppConstants.storageKeyTutor);
+
+  // ==========================
+  // DATOS HIJO
+  // ==========================
+  Future<void> saveHijo(Map<String, dynamic> data) async {
+    await box.write(AppConstants.storageKeyHijo, data);
+    await box.save();
+  }
+
+  Map<String, dynamic>? getHijo() =>
+      box.read(AppConstants.storageKeyHijo);
+
+  // ==========================
+  // VALIDAR SESIÓN
+  // ==========================
+  bool isLoggedIn() =>
+      getToken() != null && getUserId() != null;
+
+  // ==========================
+  // LIMPIAR TODO
+  // ==========================
+  Future<void> clearSession() async {
+    await box.erase();
+    await box.save();
+  }
 }

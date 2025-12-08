@@ -5,11 +5,13 @@ import 'config/app_theme.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 import 'api/api_client.dart';
-
+import 'presentation/bindings/app_bindings.dart';
+import 'presentation/controllers/login_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
-  ApiClient().initialize(); // Necesario siempre
+  ApiClient().initialize();
+  Get.put(LoginController(), permanent: true);
 
   runApp(const MyApp());
 }
@@ -26,11 +28,12 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.dark,
       initialRoute: AppRoutes.login,
       getPages: AppPages.pages,
+      initialBinding: AppBindings(), // 👈 AÑADIR ESTA LÍNEA
       debugShowCheckedModeBanner: false,
       defaultTransition: Transition.cupertino,
-      transitionDuration: const Duration(milliseconds: 300),
-      locale: const Locale('es', 'ES'),
-      fallbackLocale: const Locale('es', 'ES'),
+      transitionDuration: Duration(milliseconds: 300),
+      locale: Locale('es', 'ES'),
+      fallbackLocale: Locale('es', 'ES'),
     );
   }
 }

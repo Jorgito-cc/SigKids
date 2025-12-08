@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:smart_sig/presentation/controllers/login_controller.dart';
+import '../../../routes/app_routes.dart';
 import '../../../config/app_theme.dart';
 import '../../widgets/custom_button.dart';
 import '../../widgets/custom_input.dart';
@@ -17,23 +18,21 @@ class LoginPage extends GetView<LoginController> {
         child: SafeArea(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: Obx(() => Column(
-                  children: [
-                    const SizedBox(height: 40),
-                    _logo(),
-                    const SizedBox(height: 40),
-                    _title(),
-                    const SizedBox(height: 40),
-                    controller.isRegister.value
-                        ? _registerForm(context)
-                        : _loginForm(),
-                    const SizedBox(height: 20),
-                    _mainButton(),
-                    const SizedBox(height: 20),
-                    _toggleButton(),
-                    const SizedBox(height: 40),
-                  ],
-                )),
+            child: Column(
+              children: [
+                const SizedBox(height: 40),
+                _logo(),
+                const SizedBox(height: 40),
+                _title(),
+                const SizedBox(height: 40),
+                _loginForm(),
+                const SizedBox(height: 20),
+                _mainButton(),
+                const SizedBox(height: 20),
+                _registerLink(),
+                const SizedBox(height: 40),
+              ],
+            ),
           ),
         ),
       ),
@@ -55,9 +54,9 @@ class LoginPage extends GetView<LoginController> {
   }
 
   Widget _title() {
-    return Text(
-      controller.isRegister.value ? "Registro" : "Bienvenido",
-      style: const TextStyle(
+    return const Text(
+      "Bienvenido",
+      style: TextStyle(
           fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
     );
   }
@@ -89,84 +88,21 @@ class LoginPage extends GetView<LoginController> {
     );
   }
 
-  Widget _registerForm(BuildContext context) {
-    return Column(
-      children: [
-        CustomInput(
-          label: "Nombre",
-          controller: controller.name,
-          prefixIcon: Icons.person,
-        ),
-        const SizedBox(height: 20),
-        CustomInput(
-          label: "Apellido",
-          controller: controller.lastname,
-          prefixIcon: Icons.person_outline,
-        ),
-        const SizedBox(height: 20),
-        CustomInput(
-          label: "Cédula",
-          controller: controller.ci,
-          prefixIcon: Icons.badge,
-        ),
-        const SizedBox(height: 20),
-        CustomInput(
-          label: "Fecha de nacimiento",
-          controller: controller.birth,
-          readOnly: true,
-          prefixIcon: Icons.calendar_today,
-          onTap: () => controller.pickBirthDate(context),
-        ),
-        const SizedBox(height: 20),
-        CustomInput(
-          label: "Dirección",
-          controller: controller.address,
-          prefixIcon: Icons.home,
-        ),
-        const SizedBox(height: 20),
-        CustomInput(
-          label: "Email",
-          controller: controller.email,
-          prefixIcon: Icons.email,
-        ),
-        const SizedBox(height: 20),
-        Obx(() => CustomInput(
-              label: "Contraseña",
-              controller: controller.password,
-              obscureText: controller.obscure.value,
-              prefixIcon: Icons.lock,
-              suffixIcon: IconButton(
-                icon: Icon(
-                    controller.obscure.value
-                        ? Icons.visibility
-                        : Icons.visibility_off,
-                    color: Colors.white),
-                onPressed: controller.togglePassword,
-              ),
-            )),
-      ],
-    );
-  }
-
   Widget _mainButton() {
     return Obx(() => CustomButton(
-          text: controller.isRegister.value ? "Registrarse" : "Iniciar sesión",
-          onPressed: controller.isRegister.value
-              ? controller.register
-              : controller.login,
+          text: "Iniciar sesión",
+          onPressed: controller.login,
           isLoading: controller.loading.value,
         ));
   }
 
-  Widget _toggleButton() {
+  Widget _registerLink() {
     return TextButton(
-      onPressed: controller.toggleMode,
-      child: Obx(() => Text(
-            controller.isRegister.value
-                ? "¿Ya tienes cuenta? Iniciar sesión"
-                : "¿No tienes cuenta? Regístrate",
-            style: const TextStyle(color: Colors.white),
-          )),
+      onPressed: () => Get.toNamed(AppRoutes.roleSelector),
+      child: const Text(
+        "¿No tienes cuenta? Regístrate",
+        style: TextStyle(color: Colors.white),
+      ),
     );
   }
 }

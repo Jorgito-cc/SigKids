@@ -4,6 +4,8 @@ class AppRoutes {
   static const login = '/login';
   static const register = '/register';
   static const roleSelector = '/role-selector';
+  static const registerTutor = '/register-tutor';
+  static const registerHijo = '/register-hijo';
 
   // Home
   static const home = '/home';
@@ -40,4 +42,6 @@ class AppRoutes {
   // Perfil
   static const perfil = '/perfil';
   static const configuracion = '/configuracion';
+
+  static const asignarHijo = '/asignar-hijo';
 }

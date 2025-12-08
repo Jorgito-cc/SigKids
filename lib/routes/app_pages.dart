@@ -9,10 +9,13 @@ import '../presentation/bindings/home_hijo_binding.dart';
 import '../presentation/bindings/nino_binding.dart';
 import '../presentation/bindings/area_binding.dart';
 import '../presentation/bindings/mapa_binding.dart';
+import '../presentation/bindings/perfil_binding.dart';
 
 // Pages
 import '../presentation/pages/login/login_page.dart';
 import '../presentation/pages/login/role_selector_page.dart';
+import '../presentation/pages/login/register_tutor_page.dart';
+import '../presentation/pages/login/register_hijo_page.dart';
 import '../presentation/pages/home/home_page.dart';
 import '../presentation/pages/home/home_tutor_page.dart';
 import '../presentation/pages/home/home_hijo_page.dart';
@@ -22,6 +25,8 @@ import '../presentation/pages/area/area_list_page.dart';
 import '../presentation/pages/area/area_form_page.dart';
 import '../presentation/pages/asignacion/asignacion_page.dart';
 import '../presentation/pages/mapa/mapa_page.dart';
+import '../presentation/pages/perfil/perfil_page.dart';
+import '../presentation/pages/tutor/asignar_hijo_page.dart';
 
 /// Configuración de páginas y rutas de la aplicación
 class AppPages {
@@ -37,17 +42,31 @@ class AppPages {
 
     GetPage(
       name: AppRoutes.register,
-      page: () => const LoginPage(),
+      page: () => const RoleSelectorPage(),
       binding: LoginBinding(),
       transition: Transition.rightToLeft,
     ),
 
-    // Selector de rol (después de login exitoso)
+    // Selector de rol (para registro: Tutor o Hijo)
     GetPage(
       name: '/role-selector',
       page: () => const RoleSelectorPage(),
       binding: LoginBinding(),
       transition: Transition.fadeIn,
+    ),
+
+    GetPage(
+      name: AppRoutes.registerTutor,
+      page: () => const RegisterTutorPage(),
+      binding: LoginBinding(),
+      transition: Transition.rightToLeft,
+    ),
+
+    GetPage(
+      name: AppRoutes.registerHijo,
+      page: () => const RegisterHijoPage(),
+      binding: LoginBinding(),
+      transition: Transition.rightToLeft,
     ),
 
     // ========== HOME ==========
@@ -149,7 +168,15 @@ class AppPages {
     GetPage(
       name: AppRoutes.perfil,
       page: () => const PerfilPage(),
-      transition: Transition.cupertino,
+      binding: PerfilBinding(),
     ),
+
+
+    GetPage(
+      name: AppRoutes.asignarHijo,
+      page: () => const AsignarHijoPage(),
+      binding: LoginBinding(),
+    ),
+
   ];
 }
